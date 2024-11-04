@@ -24,7 +24,7 @@ class GFTextField: UITextField {
         layer.cornerRadius = 10
         layer.borderWidth = 2
         layer.borderColor = UIColor.systemGray4.cgColor
-        backgroundColor = .tertiarySystemBackground  // Move this up here
+        backgroundColor = .tertiarySystemBackground
         
         textColor = .label
         tintColor = .label
@@ -34,15 +34,10 @@ class GFTextField: UITextField {
         minimumFontSize = 12
         
         autocorrectionType = .no
-        keyboardType = .default
+//        keyboardType = .default
         returnKeyType = .go
         placeholder = "Enter a username"
         
-        autocapitalizationType = .none
-        isEnabled = true
-        isUserInteractionEnabled = true
-        
-        // Remove the layer.backgroundColor line that was causing the error
     }
     
 }
