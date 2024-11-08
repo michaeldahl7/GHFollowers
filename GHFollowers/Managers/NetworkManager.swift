@@ -36,7 +36,6 @@ class NetworkManager {
             }
             
             guard let data = data else {
-                print("reached get followers data")
                 completed(.failure(.invalidData))
                 return
             }
@@ -47,7 +46,6 @@ class NetworkManager {
                 let followers = try decoder.decode([Follower].self, from: data)
                 completed(.success(followers))
             } catch {
-                print("reached get followers invalid")
                 completed(.failure(.invalidData))
             }
         }
@@ -76,7 +74,6 @@ class NetworkManager {
             }
             
             guard let data = data else {
-                print("reached data failure in getuserinfo")
                 completed(.failure(.invalidData))
                 return
             }
@@ -86,10 +83,8 @@ class NetworkManager {
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 decoder.dateDecodingStrategy = .iso8601
                 let user = try decoder.decode(User.self, from: data)
-                print("reached decoder in getuserinfo")
                 completed(.success(user))
             } catch {
-                print("reached failure in getuserinfo")
                 completed(.failure(.invalidData))
             }
         }
