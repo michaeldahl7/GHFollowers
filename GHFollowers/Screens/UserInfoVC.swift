@@ -38,15 +38,15 @@ class UserInfoVC: UIViewController {
     }
     
     func getUserInfo() {
-        NetworkManager.shared.getUserInfo(for: username) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let user):
-                DispatchQueue.main.async { self.configureUIElements(with: user) }
-            
-            case .failure(let error):
-                self.presentGFAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "OK")
+        Task {
+            do {
+                let user = try await NetworkManager.shared.getUserInfo(for: username)
+                configureUIElements(with: user)
+            } catch {
+                if let gfError = error as? GFError {
+                    presentGFAlert(title: "Something went wrong", message: gfError.rawValue, buttonTitle: "OK")
+                }
+                presentDefaultError()
             }
         }
     }
@@ -62,9 +62,7 @@ class UserInfoVC: UIViewController {
         self.add(childVC: GFUserInfoHeaderVC(user: user), to: self.headerView)
         self.add(childVC: repoItemVC, to: self.itemViewOne)
         self.add(childVC: followerItemVC, to: self.itemViewTwo)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        let formattedDate = dateFormatter.string(from: user.createdAt)
+        let formattedDate = user.createdAt.formatted(.dateTime.month().year())
         self.dateLabel.text = "Github since \(formattedDate)"
     }
     
@@ -115,7 +113,7 @@ class UserInfoVC: UIViewController {
 extension UserInfoVC: UserInfoVCDelegate {
     func didTapGithubProfile(for user: User) {
         guard let url = URL(string: user.htmlUrl) else {
-            presentGFAlertOnMainThread(title: "Invalid URL", message: "The url attached to the url is invaid", buttonTitle: "Ok")
+            presentGFAlert(title: "Invalid URL", message: "The url attached to the url is invaid", buttonTitle: "Ok")
             return
         }
         
@@ -125,7 +123,7 @@ extension UserInfoVC: UserInfoVCDelegate {
     
     func didTapGetFollowers(for user: User) {
         guard user.followers != 0 else {
-            presentGFAlertOnMainThread(title: "No followers", message: "This user has no followers", buttonTitle: "So sad")
+            presentGFAlert(title: "No followers", message: "This user has no followers", buttonTitle: "So sad")
             return
         }
         delegate.didRequestFollowers(for: user.login)

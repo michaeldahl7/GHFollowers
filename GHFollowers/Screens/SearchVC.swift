@@ -38,7 +38,7 @@ class SearchVC: UIViewController {
     @objc func pushFollowerListVC() {
         
         guard isUsernameEntered else {
-            presentGFAlertOnMainThread(title: "Empty Username", message: "Please enter a username", buttonTitle: "Ok")
+            presentGFAlert(title: "Empty Username", message: "Please enter a username", buttonTitle: "Ok")
             return
         }
         let followerListVC = FollowerListVC()
@@ -50,7 +50,7 @@ class SearchVC: UIViewController {
     func configureLogoImageVIew() {
         view.addSubview(logoImageView)
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
-        logoImageView.image = UIImage(named: "gh-logo")
+        logoImageView.image = UIImage(resource: .ghLogo)
         
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
@@ -91,4 +91,9 @@ extension SearchVC: UITextFieldDelegate {
         pushFollowerListVC()
         return true
     }
+}
+
+
+#Preview {
+    SearchVC()
 }
